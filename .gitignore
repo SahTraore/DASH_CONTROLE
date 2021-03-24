@@ -1,0 +1,6 @@
+.ipynb_checkpoints
+__pycache__/
+dash_app/
+dash_scraping/
+.cmd
+.bat
