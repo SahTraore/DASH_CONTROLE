@@ -10,6 +10,8 @@ from sqlalchemy import create_engine
 import plotly.graph_objs as go
 from datetime import date,timedelta,datetime
 import re
+
+
 postgres_str='postgresql://postgres:admin@localhost:5432/diasporaDataBase'
 
 
