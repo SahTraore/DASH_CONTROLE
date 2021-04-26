@@ -182,30 +182,30 @@ app.layout =html.Div([
 
 		html.Div([
             
-			# table
+			# table 1
 			html.H2("Possibilité(s) de Connexions", style={'textAlign': 'center'}),
 			html.Div(style={"height": 25}),
 			html.Div(id='resum1', style={'color': 'Black','font-weight': 'bold',"marginLeft": "25px"}),
 			html.Div(style={"height": 25}),
 			html.Div(id='data1',className='container'),
 
-			html.Div([
-				html.Div([
-						daq.NumericInput(id='numeric_input_connexion',value=0,size=100)
+			# html.Div([
+			# 	html.Div([
+			# 			daq.NumericInput(id='numeric_input_connexion',value=0,size=100)
 
-			        ],style={'width' : '33% ','display': 'inline-block'}),
+			#         ],style={'width' : '33% ','display': 'inline-block'}),
 
-				html.Div([
-					html.Button(id='valid_update_connexion', children="fermer l'utilisation",
-						style={'color': 'Black','backgroundColor':"green",'width':'300px','font-weight': '900','color': 'Black'})
+			# 	html.Div([
+			# 		html.Button(id='valid_update_connexion', children="fermer l'utilisation",
+			# 			style={'color': 'Black','backgroundColor':"green",'width':'300px','font-weight': '900','color': 'Black'})
 
-				],style={'width' : '33% ','display': 'inline-block'}),
+			# 	],style={'width' : '33% ','display': 'inline-block'}),
 
-				html.Div([
-					html.Div(id='numeric_output_connexion')
-				],className='row'),
+			# 	html.Div([
+			# 		html.Div(id='numeric_output_connexion')
+			# 	],className='row'),
 	
-			],className='row')
+			# ],className='row')
 
 		],className='six columns'),
 
@@ -216,29 +216,29 @@ app.layout =html.Div([
 	html.Div([
 
 		html.Div([
-			# table
+			# table 2
 			html.H2("Recherches en cours", style={'textAlign': 'center'}),
 			html.Div(id='resum2', style={'color': 'Black','font-weight': 'bold',"marginLeft": "25px"}),
 
 			html.Div(id='data2',className='container'),
 
-			html.Div([
-				html.Div([
-						daq.NumericInput(id='numeric_input_scraping',value=0,size=100)
+			# html.Div([
+			# 	html.Div([
+			# 			daq.NumericInput(id='numeric_input_scraping',value=0,size=100)
 
-			        ],style={'width' : '33% ','display': 'inline-block'}),
+			#         ],style={'width' : '33% ','display': 'inline-block'}),
 
-				html.Div([
-					html.Button(id='valid_update_scraping', children='Fermer la recherche en cours',
-						style={'color': 'Black','backgroundColor':"#309ce7 ",'font-weight': 'bold','width':'300px'})
+			# 	html.Div([
+			# 		html.Button(id='valid_update_scraping', children='Fermer la recherche en cours',
+			# 			style={'color': 'Black','backgroundColor':"#309ce7 ",'font-weight': 'bold','width':'300px'})
 
-				],style={'width' : '33% ','display': 'inline-block'}),
+			# 	],style={'width' : '33% ','display': 'inline-block'}),
 
-				html.Div([
-					html.Div(id='numeric_output_scraping')
-				],className='row'),
+			# 	html.Div([
+			# 		html.Div(id='numeric_output_scraping')
+			# 	],className='row'),
 	
-			],className='row')
+			# ],className='row')
 
 
 
@@ -248,49 +248,49 @@ app.layout =html.Div([
 
 		html.Div([
 
-			# table
+			# table 3
 			html.H2("Connexions Blocquées", style={'textAlign': 'center'}),
 			html.Div(id='resum3', style={'color': 'Black','font-weight': 'bold',"marginLeft": "25px"}),
 			# html.Div(style={"height": 25}),
 
 			html.Div(id='data3',className='container'),
-			html.Div([
-				html.Div([
-					html.Div([
-							daq.NumericInput(id='numeric_input_connexion_to_deblok',value=0,size=100)
+			# html.Div([
+			# 	html.Div([
+			# 		html.Div([
+			# 				daq.NumericInput(id='numeric_input_connexion_to_deblok',value=0,size=100)
 
-				        ],style={'width' : '33% ','display': 'inline-block'}),
+			# 	        ],style={'width' : '33% ','display': 'inline-block'}),
 
-					html.Div([
-						html.Button(id='valid_update_connexion_to_deblok', children='Lancer la connexion',
-							style={'backgroundColor':"green",'width':'250px','font-weight': '900','color': 'Black'})
+			# 		html.Div([
+			# 			html.Button(id='valid_update_connexion_to_deblok', children='Lancer la connexion',
+			# 				style={'backgroundColor':"green",'width':'250px','font-weight': '900','color': 'Black'})
 
-					],style={'width' : '33% ','display': 'inline-block'}),
+			# 		],style={'width' : '33% ','display': 'inline-block'}),
 
-					html.Div([
-						html.Div(id='numeric_output_connexion_to_deblok')
-					],className='row'),
+			# 		# html.Div([
+			# 		# 	html.Div(id='numeric_output_connexion_to_deblok')
+			# 		# ],className='row'),
 		
-				],className='row'),
+			# 	],className='row'),
 
-				html.Div([
-					html.Div([
-							daq.NumericInput(id='numeric_input_connexion_deblok',value=0,size=100)
+			# 	html.Div([
+			# 		html.Div([
+			# 				daq.NumericInput(id='numeric_input_connexion_deblok',value=0,size=100)
 
-				        ],style={'width' : '33% ','display': 'inline-block'}),
+			# 	        ],style={'width' : '33% ','display': 'inline-block'}),
 
-					html.Div([
-						html.Button(id='valid_update_connexion_deblok', children='Débloquer la connexion',
-							style={'color': 'Black','backgroundColor':"#309ce7 ",'font-weight': 'bold','width':'250px'})
+			# 		html.Div([
+			# 			html.Button(id='valid_update_connexion_deblok', children='Débloquer la connexion',
+			# 				style={'color': 'Black','backgroundColor':"#309ce7 ",'font-weight': 'bold','width':'250px'})
 
-					],style={'width' : '50% ','display': 'inline-block'}),
+			# 		],style={'width' : '50% ','display': 'inline-block'}),
 
-					html.Div([
-						html.Div(id='numeric_output_connexion_deblok')
-					],className='row')
-				],className='row')
+			# 		html.Div([
+			# 			html.Div(id='numeric_output_connexion_deblok')
+			# 		],className='row')
+			# 	],className='row')
 
-			])
+			#])
 		],className='six columns',style={"marginLeft": "25px"}),
 
 
@@ -361,6 +361,8 @@ def update_activity_graph(start_date,end_date,n_clicks):
 
         return string_prefix,result[1]
 
+
+
 @app.callback([dash.dependencies.Output('resum1','children'),
                dash.dependencies.Output('data1','children')],
               [dash.dependencies.Input('submit-button','n_clicks')])
@@ -378,9 +380,12 @@ def update_render_tab1(n_clicks):
         return [output1,output2]
     return [None,None]
 
+
+
 @app.callback([dash.dependencies.Output('resum2','children'),
                dash.dependencies.Output('data2','children')],
               [dash.dependencies.Input('submit-button','n_clicks')])
+
 def update_render_tab2(n_clicks):
     
     if n_clicks:
@@ -401,7 +406,8 @@ def update_render_tab2(n_clicks):
 @app.callback([dash.dependencies.Output('resum3','children'),
                dash.dependencies.Output('data3','children')],
               [dash.dependencies.Input('submit-button','n_clicks')])
-def update_render_tab2(n_clicks):
+
+def update_render_tab3(n_clicks):
     
     if n_clicks:
         sql3='''
@@ -416,19 +422,19 @@ def update_render_tab2(n_clicks):
         return [output1,output2]
     return [None,None]
 
-@app.callback(dash.dependencies.Output('numeric_output_connexion_to_deblok','children'),
-              dash.dependencies.Input('valid_update_connexion_to_deblok','n_clicks'),
-              dash.dependencies.Input('numeric_input_connexion_to_deblok','value'))
+# @app.callback(dash.dependencies.Output('numeric_output_connexion_to_deblok','children'),
+#               dash.dependencies.Input('valid_update_connexion_to_deblok','n_clicks'),
+#               dash.dependencies.Input('numeric_input_connexion_to_deblok','value'))
 
-def update_lancement_connexion(n_clicks,value):
+# def update_lancement_connexion(n_clicks,value):
 
-	if n_clicks :
-		if value!=0:
-			return "la connexion {} est lancer".format(value)
-		else:
-			return "L'id {} de la connexion  est introuvable".format(value)
+# 	if n_clicks :
+# 		if value!=0:
+# 			return "la connexion {} est lancer".format(value)
+# 		else:
+# 			return "L'id {} de la connexion  est introuvable".format(value)
 
-	return ""
+# 	return ""
 
 
 
