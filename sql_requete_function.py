@@ -13,7 +13,7 @@ def show_exctraction_count_by_days(engine_text,from_date=[],color='#c9c9c9'):
     if not from_date:
         sql='''
             SELECT TO_DATE(date,'YYYY-MM-DDTHH:MI:SS.FF') as foday, count(username)
-            FROM profil_scraped 
+            FROM scraping_linkedin_scraped_profiles 
             WHERE date!=''
             group by foday
             order by foday'''
@@ -23,7 +23,7 @@ def show_exctraction_count_by_days(engine_text,from_date=[],color='#c9c9c9'):
             from_date=from_date_sorted[0]
             sql='''
             SELECT TO_DATE(date,'YYYY-MM-DDTHH:MI:SS.FF') as foday, count(username)
-            FROM profil_scraped 
+            FROM scraping_linkedin_scraped_profiles 
             WHERE TO_DATE(date,'YYYY-MM-DDTHH:MI:SS.FF')>={}
             group by foday
             order by foday'''.format(repr(from_date))
@@ -33,7 +33,7 @@ def show_exctraction_count_by_days(engine_text,from_date=[],color='#c9c9c9'):
             from_date_max=from_date_sorted[1]
             sql='''
             SELECT TO_DATE(date,'YYYY-MM-DDTHH:MI:SS.FF') as foday, count(username)
-            FROM profil_scraped 
+            FROM scraping_linkedin_scraped_profiles 
             WHERE TO_DATE(date,'YYYY-MM-DDTHH:MI:SS.FF') BETWEEN {} AND {}
             group by foday
             order by foday'''.format(repr(from_date_min),repr(from_date_max))
