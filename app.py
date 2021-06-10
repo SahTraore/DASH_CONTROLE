@@ -292,6 +292,15 @@ def update_total_load(n_clicks):
 
 
 @app.callback(
+    dash.dependencies.Output('my-date-picker-range', 'end_date'), # This updates the field end_date in the DatePicker
+    dash.dependencies.Input('submit-button','n_clicks'),
+)
+def update_endate(n_clicks):
+	return date.today()
+
+
+
+@app.callback(
 	[dash.dependencies.Output('output-container-date-picker-range', 'children'),
      dash.dependencies.Output('example-graph','figure')
 	],
