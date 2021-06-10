@@ -1,13 +1,14 @@
 import pandas as pd 
-from sqlalchemy import create_engine
+from sshtunnel import SSHTunnelForwarder
 import plotly.graph_objs as go #https://www.tutorialspoint.com/plotly/
 from plotly.offline import iplot #https://www.tutorialspoint.com/plotly/
 from datetime import datetime
+import psycopg2
 
 
 
-
-def show_exctraction_count_by_days(engine_text,from_date=[],color='#c9c9c9'):
+def show_exctraction_count_by_days(ipaddress,db_name,db_user,db_port,db_password,ssh_port,remote_server_host,
+    ssh_username,ssh_user_password,from_date=[],color='#c9c9c9'):
     sql=''
     data=[]
     if not from_date:
@@ -38,11 +39,10 @@ def show_exctraction_count_by_days(engine_text,from_date=[],color='#c9c9c9'):
             group by foday
             order by foday'''.format(repr(from_date_min),repr(from_date_max))
     try:
-        connexion = create_engine(engine_text)
-        data=pd.read_sql_query(sql,con=connexion)
-    except:
+        data=get_pandas_table(sql,ipaddress,db_name,db_user,db_port,db_password,ssh_port,remote_server_host,ssh_username,ssh_user_password)
+    except Exception as e:
         print(e)
-        print('Eroor in import data\nSQL_request={}\nConnexion_engine{}'.format(sql,engine_text))
+        # print('Error in import data\nSQL_request={}\nConnexion_engine{}'.format(sql,engine_text))
 
     names=data['foday']
     valeurs=data['count']
@@ -66,13 +66,45 @@ def show_exctraction_count_by_days(engine_text,from_date=[],color='#c9c9c9'):
 
 
 
-def get_pandas_table(sql,engine_text):
+# def get_pandas_table(sql,engine_text):
+   
+#     data=[]
+#     try:
+#         connexion = create_engine(engine_text)
+#         data=pd.read_sql_query(sql,con=connexion)
+#     except Exception as e:
+#         print(e)
+#         print('Error in import data\nSQL_request={}\nConnexion_engine{}'.format(sql,engine_text))
+#     return data
+
+def get_pandas_table(sql,ipaddress,db_name,db_user,db_port,db_password,ssh_port,remote_server_host,ssh_username,ssh_user_password):
    
     data=[]
-    try:
-        connexion = create_engine(engine_text)
-        data=pd.read_sql_query(sql,con=connexion)
-    except Exception as e:
-        print(e)
-        print('Error in import data\nSQL_request={}\nConnexion_engine{}'.format(sql,engine_text))
+    if  remote_server_host!=None:
+        try:
+            with SSHTunnelForwarder((remote_server_host, ssh_port), ssh_password=ssh_user_password,ssh_username=ssh_username,
+                                    remote_bind_address=(ipaddress, db_port)) as server:
+                connexion = psycopg2.connect(dbname=db_name, user=db_user, password=db_password, port=server.local_bind_port)
+                data=pd.read_sql_query(sql,con=connexion)
+        except Exception as e:
+            print(e)
+            print('Error in import data\nSQL_request={}'.format(sql))
+    else:
+
+        # engine_text = 'postgresql://{db_user}:{db_password}@{ipaddress}:{db_port}/{db_name}'.format(db_user=db_user,
+        #     db_password=db_password,
+        #     ipaddress=ipaddress,
+        #     db_port=db_port,
+        #     db_name=db_name)
+
+        try:
+            # connexion = create_engine(engine_text)
+            connexion = psycopg2.connect(dbname=db_name, user=db_user, password=db_password, port=db_port)
+            data=pd.read_sql_query(sql,con=connexion)
+        except Exception as e:
+            print(e)
+            rint('Error in import data\nSQL_request={}'.format(sql))
+
+
+
     return data

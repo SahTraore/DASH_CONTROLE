@@ -6,13 +6,21 @@ import dash_daq as daq
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
-from sqlalchemy import create_engine
 import plotly.graph_objs as go
 from datetime import date,timedelta,datetime
 import re
+from app_config import is_localhost,local_conn_params,remote_conn_params
 
 
-postgres_str='postgresql://postgres:admin@localhost:5432/diasporaLinkedinScrapingControle'
+#
+conn_params=None
+if is_localhost==True:
+	conn_params=local_conn_params
+else:
+	conn_params=remote_conn_params
+
+
+
 
 
 app_name = 'dash-postgresqldataplot'
@@ -272,10 +280,10 @@ def display_confirmation(n_clicks):
 def update_total_load(n_clicks):
 	if n_clicks:
 		sql='''SELECT username FROM scraping_linkedin_scraped_profiles'''
-		data_scraped=sql_requete_function.get_pandas_table(sql,postgres_str)
+		data_scraped=sql_requete_function.get_pandas_table(sql,**conn_params)
 		total_load_nb=len(data_scraped)
 		sql='''SELECT * FROM scraping_linkedin_company'''
-		company_scraped=sql_requete_function.get_pandas_table(sql,postgres_str)
+		company_scraped=sql_requete_function.get_pandas_table(sql,**conn_params)
 		total_load_comp=len(company_scraped)
 
 		return [str(total_load_nb)+' profils extraits',str(total_load_comp)+' compagnies extraites']
@@ -311,8 +319,10 @@ def update_activity_graph(start_date,end_date,n_clicks):
             end_date_string = end_date_object.strftime('%d %B %Y')
             string_prefix = string_prefix + ' au ' + end_date_string
 
-        result=sql_requete_function.show_exctraction_count_by_days(engine_text=postgres_str,
-            from_date=from_date,color=style_all['backgroundColor'])
+        # result=sql_requete_function.show_exctraction_count_by_days(engine_text=postgres_str,
+        #     from_date=from_date,color=style_all['backgroundColor'],**conn_params)
+        result=sql_requete_function.show_exctraction_count_by_days(from_date=from_date,color=style_all['backgroundColor'],**conn_params)
+ 
 
         list_date=[datetime.strptime(ele,'%Y-%m-%d') for ele in  from_date]
         delta=list_date[1]-list_date[0]
@@ -334,7 +344,7 @@ def update_render_tab1(n_clicks):
         SELECT controle_connexion_id,scraper_mail,is_being_used,status,notification,ip_adress,port
         FROM scraping_linkedin_bot
         WHERE status='usable' '''
-        disp_connexion=sql_requete_function.get_pandas_table(sql1,postgres_str)
+        disp_connexion=sql_requete_function.get_pandas_table(sql1,**conn_params)
         disp_connexion.is_being_used=disp_connexion.is_being_used.replace({True:'true',False:'false'})
         # print(disp_connexion.is_being_used.dtypes)
         output1=get_resum1(disp_connexion)
@@ -361,7 +371,7 @@ def update_render_tab2(n_clicks):
          on res1.name_search_id=surnames.controle_name_id
         WHERE res1.is_being_used={is_being_used}
         '''.format(is_being_used=True)
-        using_scraping=sql_requete_function.get_pandas_table(sql2,postgres_str)
+        using_scraping=sql_requete_function.get_pandas_table(sql2,**conn_params)
         
         output1=get_resum2(using_scraping)
         output2=get_data2(using_scraping)
@@ -381,7 +391,7 @@ def update_render_tab3(n_clicks):
         SELECT controle_connexion_id,scraper_mail,is_being_used,status,notification 
         FROM scraping_linkedin_bot
         WHERE status='blocked' '''
-        connexion_block=sql_requete_function.get_pandas_table(sql3,postgres_str)
+        connexion_block=sql_requete_function.get_pandas_table(sql3,**conn_params)
         
         output1=get_resum3(connexion_block)
         output2=get_data3(connexion_block)
