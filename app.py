@@ -1,16 +1,5 @@
-import os
-import sql_requete_function
-import dash
-import dash_table
-import dash_daq as daq
-import dash_core_components as dcc
-import dash_html_components as html
-import pandas as pd
-import plotly.graph_objs as go
-from datetime import date,timedelta,datetime
-import re
 from app_config import is_localhost,local_conn_params,remote_conn_params
-
+from  sql_requete_function import  *
 
 #
 conn_params=None
@@ -19,10 +8,6 @@ if is_localhost==True:
 else:
 	conn_params=remote_conn_params
 
-
-
-
-
 app_name = 'dash-postgresqldataplot'
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -30,134 +15,6 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.title = 'Scraping_controle'
 
-
-def get_data1(data):
-    return  [dash_table.DataTable(
-				id='table_connexion_disponible',
-				columns=[{"name": i, "id": i} for i in data.columns],
-				data=data.to_dict('records'),
-				style_header={'backgroundColor': 'blue','color': 'white','font-weight': 'bold','textAlign': 'center'},
-				page_size=10,  # we have less data in this example, so setting to 20
-				# fixed_rows={'headers': True},
-    			style_table={'height': '350px','overflowX': 'auto'},
-				style_cell={
-					'backgroundColor': 'powderblue',
-					'color': 'Black','font-weight': 'bold'
-				},
-
-				style_data_conditional=[
-				   
-				    {
-				    'if': {
-				        'filter_query': '{is_being_used}="false"',
-				        },
-				        'backgroundColor': 'rgb(153, 255, 102)'
-					},
-					{
-					'if': {
-						'filter_query': '{is_being_used}="true"',
-				        },
-				        'backgroundColor': 'rgb(255, 51, 0)'
-					}
-					# {
-					# # 'if': {
-					# # 	'filter_query': '{is_being_used}=True',
-				 # #        },
-				 # #        'backgroundColor': 'rgb(255, 51, 0)'
-					# # }
-				]
-			)]
-
-def get_resum1(data):
-    text1="Tolal des possiblités : {} "
-    text2="Connexions en cours : {} "
-    text3="Connexions disponibles : {} "
-    if len(data):
-        poss=len(data)
-        en_cours=len(data[data['is_being_used']=="true"])
-        text1=text1.format(poss)
-        text2=text2.format(en_cours)
-        text3=text3.format(poss-en_cours)
-        # text="Tolal des possiblités :{} | Connexions en cours : {} | Connexions disponibles : {}".format(poss,en_cours,dispo)
-
-    return  html.Div([text1,html.P(text2),text3])
-
-
-
-def get_data2(data):
-    return [dash_table.DataTable(
-					id='table_scraping_being_used',
-					columns=[{"name": i, "id": i} for i in data.columns],
-					data=data.to_dict('records'),
-
-					style_header={
-						'backgroundColor': 'blue',
-						'color': 'white','font-weight':'bold',
-						'textAlign': 'center','overflow': 'hidden',
-					},
-					page_size=10,  # we have less data in this example, so setting to 20
-					# fixed_rows={'headers': True},
-					style_cell={
-						'backgroundColor': 'powderblue',
-						'color': 'Black','font-weight': 'bold',
-						'minWidth': '180px', 'width': '180px', 'maxWidth': '180px',
-				        'overflow': 'hidden',
-				        'textOverflow': 'ellipsis',
-					},
-					style_data_conditional=[
-						{
-							'if': {'row_index': 'odd'},
-							'backgroundColor': style_all['backgroundColor']
-						},
-					],
-					style_table={'height': '350px','overflowX': 'auto'},
-
-				)]
-
-def get_resum2(data):
-    text=""
-    if len(data):
-        text1="Nombre total de recherches : {}".format(len(data))
-        res_dict=data.groupby('residence_name')['controle_scraping_id'].count().to_dict()
-        text2='Pays : ' +' | '.join([str(ele)+' = '+str(res_dict[ele]) for ele in set(res_dict)])
-        return html.Div([text1,html.P(text2)])
-    return text
-
-
-def get_data3(data):
-    return [dash_table.DataTable(
-					id='table_connexion_block',
-					columns=[{"name": i, "id": i} for i in data.columns],
-					data=data.to_dict('records'),
-					style_header={'backgroundColor': 'blue','color': 'white','font-weight': 'bold','textAlign': 'center'},
-					page_size=10,
-					style_cell={
-						'backgroundColor': 'grey',
-						'color': 'white',
-						'font-weight': 'bold','height': 'auto',
-					},
-					style_data_conditional=[
-						{
-							'if': {'row_index': 'odd'},
-							'color': 'black',
-							'backgroundColor': style_all['backgroundColor'],
-						},
-					],
-					style_table={'height': '350px','overflowX': 'auto'},
-
-				)]
-def get_resum3(data):
-    text=""
-    if len(data):
-        text="Nombre total de connexions blocquées : {}".format(len(data))
-    else:  
-        text="Nombre total de connexions blocquées : {}".format(0)
-    return text
-
-
-style_all={
-	'backgroundColor':'#caefff'
-}
 
 #------------------------------------------------------------------------------
 app.layout =html.Div([ 
@@ -202,7 +59,7 @@ app.layout =html.Div([
 
 				html.Div(id='output-container-date-picker-range',style={'color': 'Black','font-weight': 'bold',"marginLeft": "25px"}),
 
-				html.Div(dcc.Graph(id='example-graph')),
+				html.Div(dcc.Graph(id='profile_scraped_graph')),
 
 			],className='six columns'),
 		]),
@@ -253,6 +110,22 @@ app.layout =html.Div([
 
 
 
+	html.Div([
+		html.Div([
+			# figure resum
+			html.H2("Résumer de l'extraction", style={'textAlign': 'center'}),
+
+			html.Div(dcc.Graph(id='by_origine_graph')),
+
+
+		]
+		),
+
+	],className='row')
+
+
+
+
 ],
 className='container',
 style={"marginBottom": "50px","marginTop": "25px",'backgroundColor':style_all['backgroundColor']}
@@ -279,16 +152,17 @@ def display_confirmation(n_clicks):
 
 def update_total_load(n_clicks):
 	if n_clicks:
-		sql='''SELECT username FROM scraping_linkedin_scraped_profiles'''
-		data_scraped=sql_requete_function.get_pandas_table(sql,**conn_params)
+		sql='''SELECT username FROM scraping_linkedin_scraped_profiles where is_scraped=True'''
+		data_scraped=get_pandas_table(sql,**conn_params)
 		total_load_nb=len(data_scraped)
 		sql='''SELECT * FROM scraping_linkedin_company'''
-		company_scraped=sql_requete_function.get_pandas_table(sql,**conn_params)
+		company_scraped=get_pandas_table(sql,**conn_params)
 		total_load_comp=len(company_scraped)
 
-		return [str(total_load_nb)+' profils extraits',str(total_load_comp)+' compagnies extraites']
+		return ['{} profils extraits'.format(repr(total_load_nb)),'{} compagnies extraites'.format(repr(total_load_comp))]
 
-	return [None,None]
+	return ['{} profils extraits'.format('...'),'{} compagnies extraites'.format('...')]
+
 
 
 @app.callback(
@@ -302,7 +176,7 @@ def update_endate(n_clicks):
 
 @app.callback(
 	[dash.dependencies.Output('output-container-date-picker-range', 'children'),
-     dash.dependencies.Output('example-graph','figure')
+     dash.dependencies.Output('profile_scraped_graph','figure')
 	],
 	[dash.dependencies.Input('my-date-picker-range', 'start_date'),
 	 dash.dependencies.Input('my-date-picker-range', 'end_date'),
@@ -328,9 +202,9 @@ def update_activity_graph(start_date,end_date,n_clicks):
             end_date_string = end_date_object.strftime('%d %B %Y')
             string_prefix = string_prefix + ' au ' + end_date_string
 
-        # result=sql_requete_function.show_exctraction_count_by_days(engine_text=postgres_str,
+        # result=show_exctraction_count_by_days(engine_text=postgres_str,
         #     from_date=from_date,color=style_all['backgroundColor'],**conn_params)
-        result=sql_requete_function.show_exctraction_count_by_days(from_date=from_date,color=style_all['backgroundColor'],**conn_params)
+        result=show_exctraction_count_by_days(from_date=from_date,color=style_all['backgroundColor'],**conn_params)
  
 
         list_date=[datetime.strptime(ele,'%Y-%m-%d') for ele in  from_date]
@@ -353,11 +227,11 @@ def update_render_tab1(n_clicks):
         SELECT controle_connexion_id,scraper_mail,is_being_used,status,notification,ip_adress,port
         FROM scraping_linkedin_bot
         WHERE status='usable' '''
-        disp_connexion=sql_requete_function.get_pandas_table(sql1,**conn_params)
+        disp_connexion=get_pandas_table(sql1,**conn_params)
         disp_connexion.is_being_used=disp_connexion.is_being_used.replace({True:'true',False:'false'})
         # print(disp_connexion.is_being_used.dtypes)
-        output1=get_resum1(disp_connexion)
-        output2=get_data1(disp_connexion)
+        output1=get_available_connexion_text(disp_connexion)
+        output2=get_available_connexion_data(disp_connexion)
         
         return [output1,output2]
     return [None,None]
@@ -380,10 +254,10 @@ def update_render_tab2(n_clicks):
          on res1.name_search_id=surnames.controle_name_id
         WHERE res1.is_being_used={is_being_used}
         '''.format(is_being_used=True)
-        using_scraping=sql_requete_function.get_pandas_table(sql2,**conn_params)
+        using_scraping=get_pandas_table(sql2,**conn_params)
         
-        output1=get_resum2(using_scraping)
-        output2=get_data2(using_scraping)
+        output1=get_scraping_being_used_text(using_scraping)
+        output2=get_scraping_being_used_data(using_scraping)
         
         return [output1,output2]
     return [None,None]
@@ -400,17 +274,25 @@ def update_render_tab3(n_clicks):
         SELECT controle_connexion_id,scraper_mail,is_being_used,status,notification 
         FROM scraping_linkedin_bot
         WHERE status='blocked' '''
-        connexion_block=sql_requete_function.get_pandas_table(sql3,**conn_params)
+        connexion_block=get_pandas_table(sql3,**conn_params)
         
-        output1=get_resum3(connexion_block)
-        output2=get_data3(connexion_block)
+        output1=get_blocked_connexion_text(connexion_block)
+        output2=get_blocked_connexion_data(connexion_block)
         
         return [output1,output2]
     return [None,None]
 
 
+@app.callback(dash.dependencies.Output('by_origine_graph','figure'),
+              [dash.dependencies.Input('submit-button','n_clicks')])
 
+def update_render_by_country(n_clicks):
+    figure={}
+    if n_clicks:
+    	figure=show_exctraction_count_by_country(color=style_all['backgroundColor'],**conn_params)
+        
+    return figure
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+ 	app.run_server(debug=True)
